@@ -7,8 +7,7 @@ import javax.persistence.*;
 
 @Entity 
 @DiscriminatorValue("Rivista")
-//@NamedQuery(name = "Rivista.findAll", query = "SELECT e FROM Rivista e")
-public class Rivista extends ElementoBibliografico implements Serializable {
+public class Rivista extends Pubblicazione implements Serializable {
 	
 	@Enumerated(EnumType.STRING)
 	@Column
@@ -17,7 +16,7 @@ public class Rivista extends ElementoBibliografico implements Serializable {
 	public Rivista() {}
 		
 	
-	public Rivista(long codiceisbn, String titolo, LocalDate anno, int numeropagine, Periodicità periodicita) {
+	public Rivista(long codiceisbn, String titolo, int anno, int numeropagine, Periodicità periodicita) {
 		super(codiceisbn, titolo, anno, numeropagine);
 		this.periodicita = periodicita;
 	}
@@ -30,10 +29,20 @@ public class Rivista extends ElementoBibliografico implements Serializable {
 		this.periodicita = periodicita;
 	}
 
+
 	@Override
 	public String toString() {
-		return "Riviste [periodicita=" + periodicita + "]";
+		return "Rivista [periodicita=" + periodicita + ", codiceisbn=" + getCodiceisbn() + ", titolo="
+				+ getTitolo() + ", anno=" + getAnno() + ", numeropagine=" + getNumeropagine() + "]";
 	}
+
+
+	
+
+
+	
+
+	
 	
 	
 

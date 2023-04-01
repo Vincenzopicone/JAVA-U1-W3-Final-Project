@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity 
 @Table(name="prestiti")
-///@NamedQuery(name = "Prestito.findAll", query = "SELECT e FROM Prestito e")
+@NamedQuery(name = "prestiti.findAll", query = "SELECT p FROM Prestito p")
 public class Prestito implements Serializable {
 	
 	@Id
@@ -17,8 +17,8 @@ public class Prestito implements Serializable {
 	private Long id;
 	@Column(nullable = false)
 	private Utente utente;
-	@Column(nullable = false, unique= true)
-	private ElementoBibliografico elemento;
+	@Column(nullable = false)
+	private Pubblicazione elemento;
 	@Column(nullable = false)
 	private LocalDate datainizioprestito;
 	@Column(nullable = false)
@@ -29,12 +29,12 @@ public class Prestito implements Serializable {
 	public Prestito () {}
 	
 
-	public Prestito(Utente utente, ElementoBibliografico elemento, LocalDate datainizioprestito,
-			LocalDate datarestituzioneprevista, LocalDate datarestituzioneeffettiva) {
+	public Prestito(Utente utente, Pubblicazione elemento, LocalDate datainizioprestito,
+			 LocalDate datarestituzioneeffettiva) {
 		this.utente = utente;
 		this.elemento = elemento;
 		this.datainizioprestito = datainizioprestito;
-		this.datarestituzioneprevista = datarestituzioneprevista;
+		this.datarestituzioneprevista = setDatarestituzioneprevista(datainizioprestito);
 		this.datarestituzioneeffettiva = datarestituzioneeffettiva;
 	}
 
@@ -52,10 +52,10 @@ public class Prestito implements Serializable {
 	public void setUtente(Utente utente) {
 		this.utente = utente;
 	}
-	public ElementoBibliografico getElemento() {
+	public Pubblicazione getElemento() {
 		return elemento;
 	}
-	public void setElemento(ElementoBibliografico elemento) {
+	public void setElemento(Pubblicazione elemento) {
 		this.elemento = elemento;
 	}
 	public LocalDate getDatainizioprestito() {
@@ -67,8 +67,8 @@ public class Prestito implements Serializable {
 	public LocalDate getDatarestituzioneprevista() {
 		return datarestituzioneprevista;
 	}
-	public void setDatarestituzioneprevista(LocalDate datarestituzioneprevista) {
-		this.datarestituzioneprevista = datarestituzioneprevista;
+	public LocalDate setDatarestituzioneprevista(LocalDate data) {
+		return this.datarestituzioneprevista = data.plusDays(30);
 	}
 	public LocalDate getDatarestituzioneeffettiva() {
 		return datarestituzioneeffettiva;
@@ -81,9 +81,6 @@ public class Prestito implements Serializable {
 		return "Prestito [utente=" + utente + ", elemento=" + elemento + ", datainizioprestito=" + datainizioprestito
 				+ ", datarestituzioneprevista=" + datarestituzioneprevista + ", datarestituzioneeffettiva="
 				+ datarestituzioneeffettiva + "]";
-	} 
-	
-	
-	
+	} 	
 
 }

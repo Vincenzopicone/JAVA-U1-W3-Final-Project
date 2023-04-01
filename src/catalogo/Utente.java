@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity 
 @Table(name="utenti")
-//@NamedQuery(name = "Utente.findAll", query = "SELECT e FROM Utente e")
+@NamedQuery(name = "utenti.findAll", query = "SELECT u FROM Utente u")
 public class Utente implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

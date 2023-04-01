@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import javax.persistence.*;
 
 @Entity 
-@Table(name="catalogo_bibliografico")
+@Table(name="pubblicazioni")
 @DiscriminatorColumn(name="TIPO", discriminatorType=DiscriminatorType.STRING)
 @Inheritance (strategy = InheritanceType.SINGLE_TABLE)
-public abstract class ElementoBibliografico implements Serializable {
+@NamedQuery(name = "pubblicazioni.findAll", query = "SELECT e FROM Pubblicazione e")
+public abstract class Pubblicazione implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_catalogo")
@@ -17,14 +18,14 @@ public abstract class ElementoBibliografico implements Serializable {
 	@Column(nullable = false)
 	private String titolo;
 	@Column(nullable = false)
-	private LocalDate anno;
+	private int anno;
 	@Column(nullable = false)
 	private int numeropagine;
 	
-	public ElementoBibliografico() {}
+	public Pubblicazione() {}
 	
 
-	public ElementoBibliografico(long codiceisbn, String titolo, LocalDate anno, int numeropagine) {
+	public Pubblicazione(long codiceisbn, String titolo, int anno, int numeropagine) {
 		this.codiceisbn = codiceisbn;
 		this.titolo = titolo;
 		this.anno = anno;
@@ -42,10 +43,10 @@ public abstract class ElementoBibliografico implements Serializable {
 	public void setTitolo(String titolo) {
 		this.titolo = titolo;
 	}
-	public LocalDate getAnno() {
+	public int getAnno() {
 		return anno;
 	}
-	public void setAnno(LocalDate anno) {
+	public void setAnno(int anno) {
 		this.anno = anno;
 	}
 	public int getNumeropagine() {
@@ -54,11 +55,9 @@ public abstract class ElementoBibliografico implements Serializable {
 	public void setNumeropagine(int numeropagine) {
 		this.numeropagine = numeropagine;
 	}
-	@Override
-	public String toString() {
-		return "CatalogoBibliografico [codiceisbn=" + codiceisbn + ", titolo=" + titolo + ", anno=" + anno
-				+ ", numeropagine=" + numeropagine + "]";
-	}
+	
+	
+	
 
 
 }

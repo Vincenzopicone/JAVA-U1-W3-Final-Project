@@ -7,8 +7,7 @@ import javax.persistence.*;
 
 @Entity 
 @DiscriminatorValue("Libro")
-//@NamedQuery(name = "Libro.findAll", query = "SELECT e FROM Libro e")
-public class Libro extends ElementoBibliografico implements Serializable{
+public class Libro extends Pubblicazione implements Serializable{
 	
 	
 	@Column 
@@ -18,7 +17,7 @@ public class Libro extends ElementoBibliografico implements Serializable{
 	
 	public Libro() {}
 	
-	public Libro(long codiceisbn, String titolo, LocalDate anno, int numeropagine, String autore,
+	public Libro(long codiceisbn, String titolo, int anno, int numeropagine, String autore,
 			String genere) {
 		super(codiceisbn, titolo, anno, numeropagine);
 		this.autore = autore;
@@ -37,10 +36,13 @@ public class Libro extends ElementoBibliografico implements Serializable{
 	public void setGenere(String genere) {
 		this.genere = genere;
 	}
+
 	@Override
 	public String toString() {
-		return "Libri [autore=" + autore + ", genere=" + genere + "]";
+		return "Libro [autore=" + autore + ", genere=" + genere + ", codiceisbn=" + getCodiceisbn() + ", titolo="
+				+ getTitolo() + ", anno=" + getAnno() + ", numeropagine=" + getNumeropagine() + "]";
 	}
+	
 	
 	
 }
