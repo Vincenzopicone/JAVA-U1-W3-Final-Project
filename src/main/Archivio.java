@@ -26,8 +26,7 @@ public class Archivio {
 	public static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args)  {
-				
-
+			
 	}
 	public static void salva(Object u) {
 		em.getTransaction().begin();
