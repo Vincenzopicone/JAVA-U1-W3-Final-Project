@@ -1,4 +1,4 @@
-package catalogo;
+package model;
 
 import java.time.LocalDate;
 
@@ -21,6 +21,9 @@ public class Utente implements Serializable {
 	private LocalDate datadinascita;
 	@Column(nullable = false, unique = true)
 	private Long numeroditessera;
+	
+	@OneToOne(mappedBy= "utente")
+	private Prestito prestito;
 	
 	public Utente () {}
 	

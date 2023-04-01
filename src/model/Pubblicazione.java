@@ -1,4 +1,4 @@
-package catalogo;
+package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
@@ -21,6 +21,9 @@ public abstract class Pubblicazione implements Serializable {
 	private int anno;
 	@Column(nullable = false)
 	private int numeropagine;
+	
+	@OneToOne(mappedBy= "elemento")
+	private Prestito prestito;
 	
 	public Pubblicazione() {}
 	

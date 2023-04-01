@@ -1,4 +1,4 @@
-package catalogo;
+package model;
 
 import java.time.LocalDate;
 
@@ -15,27 +15,28 @@ public class Prestito implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_prestito")
 	private Long id;
-	@Column(nullable = false)
+	@OneToOne
+	@JoinColumn(name="prestito_utente")
 	private Utente utente;
-	@Column(nullable = false)
+	@OneToOne
+	@JoinColumn(name="prestito_elemento")
 	private Pubblicazione elemento;
 	@Column(nullable = false)
 	private LocalDate datainizioprestito;
-	@Column(nullable = false)
+	@Column
 	private LocalDate datarestituzioneprevista;
-	@Column(nullable = false)
+	@Column
 	private LocalDate datarestituzioneeffettiva;	
 	
 	public Prestito () {}
 	
 
-	public Prestito(Utente utente, Pubblicazione elemento, LocalDate datainizioprestito,
-			 LocalDate datarestituzioneeffettiva) {
+	public Prestito(Utente utente, Pubblicazione elemento, LocalDate datainizioprestito, LocalDate date) {
 		this.utente = utente;
 		this.elemento = elemento;
 		this.datainizioprestito = datainizioprestito;
-		this.datarestituzioneprevista = setDatarestituzioneprevista(datainizioprestito);
-		this.datarestituzioneeffettiva = datarestituzioneeffettiva;
+		this.datarestituzioneeffettiva= date;
+		
 	}
 
 	public Long getId() {
@@ -63,6 +64,7 @@ public class Prestito implements Serializable {
 	}
 	public void setDatainizioprestito(LocalDate datainizioprestito) {
 		this.datainizioprestito = datainizioprestito;
+		this.datarestituzioneprevista = datainizioprestito.plusDays(30);
 	}
 	public LocalDate getDatarestituzioneprevista() {
 		return datarestituzioneprevista;

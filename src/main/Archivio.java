@@ -1,79 +1,62 @@
-package catalogo;
-
+package main;
 import java.time.LocalDate;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import model.Libro;
+import model.Periodicità;
+import model.Prestito;
+import model.Pubblicazione;
+import model.Rivista;
+import model.Utente;
+import utils.JpaUtils;
+
 import java.util.Scanner;
 
 
 public class Archivio {
 	
-	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("java_catalogo");
+	static EntityManagerFactory emf = JpaUtils.getEntityManagerFactory();
 	static EntityManager em = emf.createEntityManager();
+
 	public static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args)  {
-		
-		try {
-			Libro L = new Libro(2651, "Librone2", 2003, 456, "autore1", "genere1");
-			Rivista R = new Rivista(32551, "Rivistone1", 2006, 5565, Periodicità.SEMESTRALE );
-			Utente U = new Utente("Nome1", "Cognome1", LocalDate.of(1900, 1, 1), 300l);
-			Prestito P = new Prestito(U, R, LocalDate.of(2022, 1, 1), LocalDate.of(2023, 1, 1));
-		    //salva(L);
-		    //salva(R);			
-		    //salva(U);
-			//System.out.println(elemento);
-			//salva(P);
-			//ElementoBibliografico libroLetto = ricercaPerID(1l);
-			//System.out.println(libroLetto);
-			///cancella(libroLetto);
-			//ricercaPerISBN(231l);
-			//ricercaPerData(2002);			
-			//ricercaPerAutore("autore1");
-			//tuttoArchivio();
-			//tuttiIPrestiti();
-			//ricercaPerTitolo("L");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			em.close();
-			emf.close();
-		}			
+				
 
 	}
 	public static void salva(Object u) {
-		try {em.getTransaction().begin();
+		em.getTransaction().begin();
 		em.persist(u);
 		em.getTransaction().commit(); 
 		System.out.println("Elemento salvato nel DB!");
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-		} finally {
-			em.close();
-		}
-				
+		
 	}
 	public static void elimina(Object e) {
-		em.getTransaction().begin();
+		try{em.getTransaction().begin();
 		em.remove(e);
 		em.getTransaction().commit();
 		System.out.println("oggetto eliminato dall'archivio!");
+	} catch (Exception exc) {
+		em.getTransaction().rollback();
+	} finally {
+		em.close();
+	}
 	}
 	public static List<Pubblicazione> tuttoArchivio() {
 		Query q = em.createNamedQuery("pubblicazioni.findAll");
 		return q.getResultList();
 	}
-	public static List<Prestito> tuttiIPrestiti() {
-		Query q = em.createNamedQuery("prestiti.findAll");
-		return q.getResultList();
-	}
 	public static List<Utente> tuttiGliUtenti() {
 		Query q = em.createNamedQuery("utenti.findAll");
+		return q.getResultList();
+	}
+	public static List<Prestito> tuttiIPrestiti() {
+		Query q = em.createNamedQuery("prestiti.findAll");
 		return q.getResultList();
 	}
 	public static Pubblicazione ricercaPerID(Long id) {
@@ -88,7 +71,34 @@ public class Archivio {
 		return a;
 		
 	}
+	public static Utente ricercaUtentePerID(Long id) {
+		em.getTransaction().begin();
+		Utente a = em.find(Utente.class, id);
+		em.getTransaction().commit();
+		if(a != null) {
+			System.out.println(a.toString());
+		} else {
+			System.out.println("nessuun utente trovato con in:" + id);
+		}
+		return a;
+		
+	}
 	public static Pubblicazione ricercaPerISBN(Long isbn) {
+		em.getTransaction().begin();
+		
+		TypedQuery<Pubblicazione> query = em.createQuery("SELECT p FROM Pubblicazione p WHERE p.codiceisbn = :isbn", Pubblicazione.class);
+	    query.setParameter("isbn", isbn);
+	    Pubblicazione resultp = query.getSingleResult();	    
+	    em.getTransaction().commit();
+	    if (resultp != null) {
+	    	System.out.println(resultp.toString());
+	    } else {
+	        System.out.println("Nessuna pubblicazione trovata per questo isbn " + isbn);
+	    }
+	   
+	    return resultp;
+	}
+	public static Pubblicazione cancellaPerISBN(Long isbn) {
 		em.getTransaction().begin();
 		
 		TypedQuery<Pubblicazione> query = em.createQuery("SELECT p FROM Pubblicazione p WHERE p.codiceisbn = :isbn", Pubblicazione.class);
@@ -118,7 +128,7 @@ public class Archivio {
 		TypedQuery<Pubblicazione> query = em.createQuery("SELECT p FROM Pubblicazione p WHERE p.anno = :year", Pubblicazione.class);
 	    query.setParameter("year", year);
 	    List<Pubblicazione> resultList = query.getResultList();
-	    
+	  
 	    em.getTransaction().commit();
 	    if (resultList != null && !resultList.isEmpty()) {
 	        for (Pubblicazione p : resultList) {
@@ -157,8 +167,20 @@ public class Archivio {
 	        System.out.println("Nessuna pubblicazione trovata per il titolo " + titolo);
 	    }
 	}
-	
-	
-	
 
+	public static void ricercaPerTessera (Long numero) {
+		em.getTransaction().begin();
+		TypedQuery<Prestito> query = em.createQuery("SELECT p FROM Prestito p WHERE p.utente.numeroditessera = :numero AND p.datarestituzioneeffettiva = null", Prestito.class);
+		query.setParameter("numero", numero);
+		 List<Prestito> resultList = query.getResultList();
+			em.getTransaction().commit();
+			if (resultList != null && !resultList.isEmpty()) {
+		        for (Prestito p : resultList) {
+		            System.out.println(p.toString());
+		        }
+		    } else {
+		        System.out.println("Nessun prestito trovato per questo numero di tessera " + numero);
+		    }
+	}
+	
 }

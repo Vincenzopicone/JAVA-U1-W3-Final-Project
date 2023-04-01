@@ -1,4 +1,4 @@
-package catalogo;
+package model;
 
 public enum Periodicità {
 	SETTIMANALE,
